@@ -32,7 +32,7 @@ math_microservice/
 
 ## ▶️ How to Run the Application
 
-1. (Optional) Create and activate a virtual environment:
+1. Create and activate a virtual environment:
 ```bash
 python -m venv .venv
 source .venv/bin/activate        # Mac/Linux
