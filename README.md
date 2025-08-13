@@ -1,4 +1,3 @@
-
 # 🧮 Math Microservice – FastAPI
 
 This project is an asynchronous microservice built with FastAPI, offering a RESTful API for solving three fundamental math operations:
@@ -118,3 +117,83 @@ This structure makes the project easy to extend (e.g., adding more math operatio
 - Designed to be lightweight and modular
 - No Docker or external services required
 - Database is auto-created on first run
+
+---
+
+## 🧩 Bonus I: Redis Stream Integration
+
+In addition to storing all requests in a database, this microservice also publishes each request to a **Redis Stream** called `math_operations`. This enables integration with real-time systems such as analytics dashboards, monitoring tools, or distributed consumers.
+
+### 🔧 Technology Used
+
+- **Redis Streams** – A lightweight, append-only data structure for event streaming
+- **redis[async]** Python package – For native asyncio support with Redis
+- **Stream name**: `math_operations`
+
+Each request to the `/api/pow`, `/api/fibonacci`, or `/api/factorial` endpoints is published to the stream with the following fields:
+- `operation` – Name of the operation (e.g. `pow`, `factorial`)
+- `input` – Serialized input JSON
+- `result` – Result of the computation
+
+### ✅ Example Redis Stream Entry
+
+```bash
+127.0.0.1:6379> XREAD STREAMS math_operations 0
+```
+
+Returns:
+
+```
+1) 1) "math_operations"
+   2) 1) 1) "1691859522330-0"
+         2) 1) "operation"
+            2) "factorial"
+            3) "input"
+            4) "{\"n\": 5}"
+            5) "result"
+            6) "120"
+```
+
+
+### 🧪 Local Setup – Running Redis Locally (Windows)
+
+If you're not using Docker, you can run Redis manually on your machine. Below are the full steps for Windows:
+
+1. **Download Redis for Windows**
+  - Go to the official releases page: [https://github.com/tporadowski/redis/releases](https://github.com/tporadowski/redis/releases)
+  - Download the latest `.zip` archive (e.g., `redis-x64-5.x.x.zip`).
+
+2. **Extract the Archive**
+  - Extract the contents of the `.zip` file to a folder of your choice (e.g., `C:\redis`).
+
+3. **Run the Redis Server**
+  - Open a Command Prompt or PowerShell window.
+  - Navigate to the folder where you extracted Redis (e.g., `cd C:\redis`).
+  - Start the server by running:
+    ```powershell
+    .\redis-server.exe
+    ```
+
+4. **(Optional) Run the Redis CLI**
+  - In a new Command Prompt or PowerShell window, navigate to the same folder and run:
+    ```powershell
+    .\redis-cli.exe
+    ```
+  - Test the connection:
+    ```powershell
+    ping
+    # → PONG
+    ```
+
+5. **Keep the Redis server window open** while using the microservice. The application will connect to Redis at `localhost:6379` by default.
+
+---
+
+#### Linux/macOS
+
+```bash
+sudo apt install redis
+redis-server
+```
+
+

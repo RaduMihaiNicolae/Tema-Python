@@ -1,6 +1,7 @@
 from datetime import datetime
 from models.database import DB_FILE
 import aiosqlite
+from services.stream_service import push_to_stream
 
 
 async def log_request(operation: str, input_data: str, result: str):
@@ -11,3 +12,5 @@ async def log_request(operation: str, input_data: str, result: str):
             (operation, input_data, result, timestamp),
         )
         await db.commit()
+
+    await push_to_stream(operation, input_data, result)

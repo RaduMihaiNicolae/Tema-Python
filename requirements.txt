@@ -2,3 +2,4 @@ fastapi==0.110.0
 uvicorn==0.29.0
 aiosqlite==0.19.0
 pydantic==2.7.1
+redis[async]==5.0.1
